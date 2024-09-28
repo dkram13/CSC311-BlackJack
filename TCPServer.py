@@ -12,9 +12,9 @@ deck = [(val, suit) for val in card_values for suit in card_suits]
 
 def values(val):
 	if val[0] in ['Jack', 'Queen', 'King']:
-		return int(10)
+		return 10
 	elif val[0] == 'Ace':
-		return int(11)
+		return 11
 	else:
 		return int(val[0]) 
 
@@ -28,8 +28,8 @@ while True:
 	p_card_val2 = (values(val) for val in player_card2)
 	dealer_card2 = [deck.pop()]
 
-	player_sum = sum(values(val) for val in player_card1 for val in player_card2) 
-	dealer_sum = sum(values(val) for val in dealer_card1 for val in dealer_card2)
+	player_sum = sum(values(val) for val in player_card1 + player_card2)
+	dealer_sum = sum(values(val) for val in dealer_card1 + dealer_card2)
 	dealer_score = sum(values(val) for val in dealer_card1)
 	
 	print("----------------------------")
