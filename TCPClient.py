@@ -5,12 +5,14 @@ clientSocket = socket(AF_INET, SOCK_STREAM)
 clientSocket.connect((serverName, serverPort))
 print('\n Connect to:', '127.0.0.1, 16666')
 while True:
-	sentence = input('Would you like to play a game of black jack:')
-	clientSocket.send(sentence.encode())
-	modifiedSentence = clientSocket.recv(1024).decode()
-	print(modifiedSentence)
-	if modifiedSentence == ("correct"):
+#	sentence = input('Would you like to play a game of black jack:')
+#	clientSocket.send(sentence.encode())
+	message_str = clientSocket.recv(1024).decode()
+	if not message_str:
 		break
+	print(message_str)
+#	if modifiedSentence == ("correct"):
+#		break
 clientSocket.close()
 
 ## Server sends cards and asks to Hit or Stay

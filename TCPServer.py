@@ -20,6 +20,7 @@ def values(val):
 
 while True:
 	connectionSocket,addr = serverSocket.accept()
+
 	random.shuffle(deck)
 	player_card1 = [deck.pop()]
 	p_card_val1 = (values(val) for val in player_card1)
@@ -32,6 +33,7 @@ while True:
 	dealer_sum = sum(values(val) for val in dealer_card1 + dealer_card2)
 	dealer_score = sum(values(val) for val in dealer_card1)
 	
+
 	print("----------------------------")
 	print("Player shows: ", player_card1, player_card2)
 	print("Player score: ", player_sum)
@@ -39,14 +41,25 @@ while True:
 	print("Dealer score: ", dealer_score)
 	print("----------------------------")
 
+	message = [
+		"----------------------------", "\n",
+		"Player shows: ", str(player_card1), str(player_card2),"\n",
+		"Player score: ", player_sum, "\n",
+		"Dealer shows: ", str(dealer_card1), "****", "\n",
+		"Dealer score: ", dealer_score, "\n",
+		"----------------------------", "\n"
+	]
 
-	
-	sentence = int(connectionSocket.recv(1024).decode())
-	if rn == sentence:
-		message = 'correct'
-		connectionSocket.send(message.encode())
-		connectionSocket.close()
-	else:
-		message = 'incorrect'
-		connectionSocket.send(message.encode())
+	message_str = " ".join(map(str, message))
+
+	connectionSocket.send(message_str.encode())
+	connectionSocket.close()
+#	sentence = int(connectionSocket.recv(1024).decode())
+#	if rn == sentence:
+#		message = 'correct'
+#			connectionSocket.send(message.encode())
+#			connectionSocket.close()
+#		else:
+#			message = 'incorrect'
+#			connectionSocket.send(message.encode())
 	
