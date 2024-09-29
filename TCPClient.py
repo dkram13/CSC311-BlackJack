@@ -18,11 +18,7 @@ while True:
 	if not message:
 		break
 	print(message)
-#	if modifiedSentence == ("correct"):
-#		break
-
-
-
+	break
 clientSocket.close()
 
 ## Server sends cards and asks to Hit or Stay

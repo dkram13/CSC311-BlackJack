@@ -1,9 +1,15 @@
 from socket import *
 import random
 
-card_suits = ["Hearts", 'Diamonds', 'Spades', 'Clubs']
-card_values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
-deck = [(val, suit) for val in card_values for suit in card_suits]
+def makeDeck():
+    card_suits = ["Hearts", 'Diamonds', 'Spades', 'Clubs']
+    card_values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
+    deck = [(val, suit) for val in card_values for suit in card_suits]   
+    return deck
+#def moreCardsPlayer():
+    
+#def moreCardsDealer():
+      
 
 def values(val):
 	if val[0] in ['Jack', 'Queen', 'King']:
@@ -19,7 +25,7 @@ def main():
     serverPort = 16666
     serverSocket = socket(AF_INET, SOCK_STREAM)
     serverSocket.bind(('', serverPort))
-    serverSocket.listen(5)
+    serverSocket.listen()
     print('The server is ready to receive')
     while True:
         connectionSocket,addr = serverSocket.accept()
@@ -27,14 +33,17 @@ def main():
         if 'yes' == sentence:
             reply = "Okay lets play a game.\n"
             connectionSocket.send(reply.encode())
-
-            random.shuffle(deck)
-            player_card1 = [deck.pop()]
+            dealersDeck = makeDeck()
+            random.shuffle(dealersDeck)
+            #playerCards = []
+            #playerCards.append(deck.pop())
+        
+            player_card1 = [dealersDeck.pop()]
             #p_card_val1 = (values(val) for val in player_card1)
-            dealer_card1 = [deck.pop()]
-            player_card2 = [deck.pop()]
+            dealer_card1 = [dealersDeck.pop()]
+            player_card2 = [dealersDeck.pop()]
             #p_card_val2 = (values(val) for val in player_card2)
-            dealer_card2 = [deck.pop()]
+            dealer_card2 = [dealersDeck.pop()]
 
             player_sum = sum(values(val) for val in player_card1 + player_card2)
             dealer_sum = sum(values(val) for val in dealer_card1 + dealer_card2)
@@ -44,8 +53,8 @@ def main():
             print("----------------------------")
             print("Player shows: ", player_card1, player_card2)
             print("Player score: ", player_sum)
-            print("Dealer shows: ", dealer_card1, "****")
-            print("Dealer score: ", dealer_score)
+            print("Dealer shows: ", dealer_card1, dealer_card2)
+            print("Dealer score: ", dealer_sum)
             print("----------------------------")
 
             message = [
@@ -60,7 +69,7 @@ def main():
             message_str = " ".join(map(str, message))
 
             connectionSocket.send(message_str.encode())
-            #connectionSocket.close()  
+            connectionSocket.close()  
         
         elif 'no' == sentence:
             message = 'To bad I would have won.'
@@ -68,8 +77,8 @@ def main():
         else:
             message = 'Invalid input.'
             connectionSocket.send(message.encode())
-            break  
               
 if __name__ == '__main__':
     main()
+
 
