@@ -78,11 +78,11 @@ def stay(socket, deck, p_card1, p_card2, p_sum, d_card1, d_card2, d_score, d_sum
         new_card = (deck.pop())
         new_sum = values(socket, new_card) + d_sum
  
-        message = [ "\n\n Dealer hit: \n"
+        message = [ "\n Dealer hit: \n"
             "----------------------------", "\n",
-            "Player shows: ", str(p_card1), str(p_card2),"\n",
+            "Player shows: ", p_card1, p_card2,"\n",
             "Player score: ", p_sum, "\n",
-            "Dealer shows: ", str(d_card1), str(d_card2), "\n",
+            "Dealer shows: ", d_card1, d_card2, new_card, "\n",
             "Dealer score: ", new_sum, "\n",
             "----------------------------", "\n"
         ]

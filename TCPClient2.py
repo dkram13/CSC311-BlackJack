@@ -22,6 +22,8 @@ def main():
         while flag == 'True':
             hit_message = input('Hit / Stay: ')
             clientSocket.send(hit_message.encode())
+            reply = clientSocket.recv(1024).decode()
+            print(reply)
             #ace_message = clientSocket.recv(1024).decode()
         if flag == 'False':
             message = clientSocket.recv(1024).decode()
