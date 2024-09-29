@@ -6,6 +6,11 @@ def makeDeck():
     card_values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
     deck = [(val, suit) for val in card_values for suit in card_suits]   
     return deck
+
+def addCards(cards):
+    cardSum = sum(values(val) for val in cards)
+    return cardSum
+
 #def moreCardsPlayer():
     
 #def moreCardsDealer():
@@ -25,7 +30,7 @@ def main():
     serverPort = 16666
     serverSocket = socket(AF_INET, SOCK_STREAM)
     serverSocket.bind(('', serverPort))
-    serverSocket.listen()
+    serverSocket.listen(5)
     print('The server is ready to receive')
     while True:
         connectionSocket,addr = serverSocket.accept()
@@ -35,9 +40,16 @@ def main():
             connectionSocket.send(reply.encode())
             dealersDeck = makeDeck()
             random.shuffle(dealersDeck)
-            #playerCards = []
-            #playerCards.append(deck.pop())
-        
+            playerCards = []
+            dealerCards = []
+            playerCards.append(dealersDeck.pop())
+            dealerCards.append(dealersDeck.pop())
+            playerCards.append(dealersDeck.pop())
+            dealerCards.append(dealersDeck.pop())
+            playerSum = addCards(playerCards)
+            dealerSum = addCards(dealerCards)
+            print (playerCards)
+            print (playerSum)
             player_card1 = [dealersDeck.pop()]
             #p_card_val1 = (values(val) for val in player_card1)
             dealer_card1 = [dealersDeck.pop()]
