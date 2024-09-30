@@ -46,6 +46,7 @@ def playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
 
             # Determine the winner
             if playerSum > result and playerSum <= 21:
+                print("Player wins.")
                 message = [
 					"----------------------------", "\n",
 					"Player shows: ", str(playerCards), "\n",
@@ -56,6 +57,7 @@ def playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
 					"Player wins!\n"
         		]
             elif playerSum < result and result <= 21:
+                print("Dealer wins.")
                 message = [
 					"----------------------------", "\n",
 					"Player shows: ", str(playerCards), "\n",
@@ -66,6 +68,7 @@ def playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
 					"Dealer wins!\n"
         		]
             elif playerSum == result and playerSum < 21 and result < 21:
+                print("Tie game. Push.")
                 message = [
 					"----------------------------", "\n",
 					"Player shows: ", str(playerCards), "\n",
@@ -84,16 +87,22 @@ def playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
             playerCards.append(dealersDeck.pop())
             playerSum = addCards(playerCards)
             if playerSum > 21:
+                print("----------------------------")
+                print("Player shows: ", playerCards)
+                print("Player score: ", playerSum)
+                print("Dealer shows: ", dealerCards[0], "****")
+                print("Dealer score: ", dealer_score)
+                print("----------------------------")
+                print("Player busts! Game over.")
                 reply = [
                     "----------------------------", "\n",
                     "Player shows: ", str(playerCards), "\n",
                     "Player score: ", playerSum, "\n",
-                    "Dealer shows: ", str(dealerCards), "****", "\n",
+                    "Dealer shows: ", str(dealerCards[0]), "****", "\n",
                     "Dealer score: ", dealer_score, "\n",
                     "----------------------------", "\n",
                     "Player busts! Game over."
                 ]
-                print(reply)
                 reply_mssg = " ".join(map(str, reply))
                 connectionSocket.send(reply_mssg.encode())
                 gameGoesOn = False
