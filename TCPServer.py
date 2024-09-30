@@ -83,20 +83,23 @@ def playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
         elif answer.lower() == "hit":
             playerCards.append(dealersDeck.pop())
             playerSum = addCards(playerCards)
-
             if playerSum > 21:
                 reply = [
-					"----------------------------", "\n",
-					"Player shows: ", str(playerCards), "\n",
-					"Player score: ", playerSum, "\n",
-					"Dealer shows: ", str(dealerCards), "****", "\n",
-					"Dealer score: ", dealer_score, "\n",
-					"----------------------------", "\n",
-					"Player busts! Game over."
-				]
+                    "----------------------------", "\n",
+                    "Player shows: ", str(playerCards), "\n",
+                    "Player score: ", playerSum, "\n",
+                    "Dealer shows: ", str(dealerCards), "****", "\n",
+                    "Dealer score: ", dealer_score, "\n",
+                    "----------------------------", "\n",
+                    "Player busts! Game over."
+                ]
                 print(reply)
-                connectionSocket.send(reply.encode())
+                reply_mssg = " ".join(map(str, reply))
+                connectionSocket.send(reply_mssg.encode())
                 gameGoesOn = False
+
+
+				
 
 def dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score, connectionSocket, dealersDeck):
 	dealersTurn = True
