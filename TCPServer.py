@@ -30,7 +30,7 @@ def playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
             "Dealer shows: ", str(dealerCards[0]), "****", "\n",
             "Dealer score: ", dealer_score, "\n",
             "----------------------------", "\n",
-            "Would you like to Hit or Stay?\n"  
+            "Would you like to Hit or Stay?\n"
         ]
 
         message_str = " ".join(map(str, message))
@@ -41,21 +41,56 @@ def playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
 
         if answer.lower() == "stay":
             gameGoesOn = False
-            reply = "Player stayed. Game over!"
-            connectionSocket.send(reply.encode())
-        
+            # Call dealer's action and get the result
+            reply = dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score, connectionSocket, dealersDeck)
+
+            # Determine the winner
+            if playerSum > dealerSum:
+                reply.append("You win\n")
+            elif playerSum < dealerSum:
+                reply.append("Dealer wins\n")
+            else:
+                reply.append("It's a tie!\n")
+
+            # Convert the reply to a string and send it to the client
+            message_str = " ".join(map(str, reply))
+            connectionSocket.send(message_str.encode())
+
         elif answer.lower() == "hit":
             playerCards.append(dealersDeck.pop())
             playerSum = addCards(playerCards)
-            
+
             if playerSum > 21:
                 reply = "Player busts! Game over."
                 print(reply)
                 connectionSocket.send(reply.encode())
                 gameGoesOn = False
-#def dealerHitOrStay(dealerCards, dealerSum, dealer_score, connectionSocket, dealersDeck):
-	#while True:
-    
+
+def dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score, connectionSocket, dealersDeck):
+	dealersTurn = True
+	while dealersTurn:
+		if dealerSum < 17:
+			dealerCards.append(dealersDeck.pop())
+			dealerSum = addCards(dealerCards)
+		elif dealerSum >= 17:
+			print("----------------------------")
+			print("Player shows: ", playerCards)
+			print("Player score: ", playerSum)
+			print("Dealer shows: ", dealerCards)
+			print("Dealer score: ", dealerSum)
+			print("----------------------------")
+
+			# Prepare the message to send to the client
+			message = [
+				"----------------------------", "\n",
+				"Player shows: ", str(playerCards), "\n",
+				"Player score: ", playerSum, "\n",
+				"Dealer shows: ", str(dealerCards[0]), "****", "\n",
+				"Dealer score: ", dealer_score, "\n",
+				"----------------------------", "\n",
+			]
+			return message
+
 #def moreCardsDealer():
       
 
