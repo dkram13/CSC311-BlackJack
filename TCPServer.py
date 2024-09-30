@@ -42,18 +42,42 @@ def playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
         if answer.lower() == "stay":
             gameGoesOn = False
             # Call dealer's action and get the result
-            reply = dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score, connectionSocket, dealersDeck)
+            result = dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score, connectionSocket, dealersDeck)
 
             # Determine the winner
-            if playerSum > dealerSum:
-                reply.append("You win\n")
-            elif playerSum < dealerSum:
-                reply.append("Dealer wins\n")
-            else:
-                reply.append("It's a tie!\n")
+            if playerSum > result and playerSum <= 21:
+                message = [
+					"----------------------------", "\n",
+					"Player shows: ", str(playerCards), "\n",
+					"Player score: ", playerSum, "\n",
+					"Dealer shows: ", str(dealerCards), "\n",
+					"Dealer score: ", result, "\n",
+					"----------------------------", "\n",
+					"Player wins!\n"
+        		]
+            elif playerSum < result and result <= 21:
+                message = [
+					"----------------------------", "\n",
+					"Player shows: ", str(playerCards), "\n",
+					"Player score: ", playerSum, "\n",
+					"Dealer shows: ", str(dealerCards), "\n",
+					"Dealer score: ", result, "\n",
+					"----------------------------", "\n",
+					"Dealer wins!\n"
+        		]
+            elif playerSum == result and playerSum < 21 and result < 21:
+                message = [
+					"----------------------------", "\n",
+					"Player shows: ", str(playerCards), "\n",
+					"Player score: ", playerSum, "\n",
+					"Dealer shows: ", str(dealerCards), "\n",
+					"Dealer score: ", result, "\n",
+					"----------------------------", "\n",
+					"It's a tie. Push.\n"
+        		]
 
             # Convert the reply to a string and send it to the client
-            message_str = " ".join(map(str, reply))
+            message_str = " ".join(map(str, message))
             connectionSocket.send(message_str.encode())
 
         elif answer.lower() == "hit":
@@ -61,7 +85,15 @@ def playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
             playerSum = addCards(playerCards)
 
             if playerSum > 21:
-                reply = "Player busts! Game over."
+                reply = [
+					"----------------------------", "\n",
+					"Player shows: ", str(playerCards), "\n",
+					"Player score: ", playerSum, "\n",
+					"Dealer shows: ", str(dealerCards), "****", "\n",
+					"Dealer score: ", dealer_score, "\n",
+					"----------------------------", "\n",
+					"Player busts! Game over."
+				]
                 print(reply)
                 connectionSocket.send(reply.encode())
                 gameGoesOn = False
@@ -81,15 +113,17 @@ def dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
 			print("----------------------------")
 
 			# Prepare the message to send to the client
-			message = [
+			'''message = [
 				"----------------------------", "\n",
 				"Player shows: ", str(playerCards), "\n",
 				"Player score: ", playerSum, "\n",
-				"Dealer shows: ", str(dealerCards[0]), "****", "\n",
-				"Dealer score: ", dealer_score, "\n",
+				"Dealer shows: ", str(dealerCards), "\n",
+				"Dealer score: ", dealerSum, "\n",
 				"----------------------------", "\n",
-			]
-			return message
+			]'''
+			break
+	return dealerSum#, message
+		
 
 #def moreCardsDealer():
       
@@ -136,8 +170,28 @@ def main():
 				dealerSum = addCards(dealerCards)
 				dealer_score = values(dealerCards[0])
 				if dealerSum == 21:
-					youLose = "I won before the game even started to bad so sad.\n"
+					youLose = [
+						"----------------------------", "\n",
+						"Player shows: ", str(playerCards), "\n",
+						"Player score: ", playerSum, "\n",
+						"Dealer shows: ", str(dealerCards), "\n",
+						"Dealer score: ", dealerSum, "\n",
+						"----------------------------", "\n",
+						"Dealer got Blackjack! Dealer wins.\n"
+					]
 					connectionSocket.send(youLose.encode())  # sends confirmation 
+					continue
+				elif playerSum == 21:
+					youLose = [
+						"----------------------------", "\n",
+						"Player shows: ", str(playerCards), "\n",
+						"Player score: ", playerSum, "\n",
+						"Dealer shows: ", str(dealerCards), "\n",
+						"Dealer score: ", dealerSum, "\n",
+						"----------------------------", "\n",
+						"Blackjack! Player wins.\n"
+					]
+					connectionSocket.send(youLose.encode())
 					continue
 				else:
 					youLose = "I didn't win right way its go time.\n"

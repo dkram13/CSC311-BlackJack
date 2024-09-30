@@ -17,7 +17,7 @@ def main():
 		start_reply = clientSocket.recv(1024).decode()  # receives confirmation of game
 		print(start_reply)
 		heWon = clientSocket.recv(1024).decode()
-		if "I won before" in heWon:
+		if "Dealer got Blackjack" in heWon:
 			print(heWon)
 			break
 		else:
