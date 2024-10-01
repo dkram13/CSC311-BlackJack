@@ -26,6 +26,9 @@ def main():
 
 		while iWannaPlay:
 			deal_message = clientSocket.recv(1024).decode()  # receives the card draw message from server
+			if 'You drew an Ace.' in deal_message:
+				ace_val = input(deal_message)
+				clientSocket.send(ace_val.encode())
 			hitOrStay = input(deal_message)  # asks user to hit or stay
 			clientSocket.send(hitOrStay.encode())  # sends user's answer to the server
 			
@@ -40,7 +43,7 @@ def main():
 	clientSocket.close()
 
 if __name__ == '__main__':
-    main()
+	main()
 ## Server sends cards and asks to Hit or Stay
 ## if the dealer is dealt 21 games over right away
 ## server starts and get the cards ready to send
