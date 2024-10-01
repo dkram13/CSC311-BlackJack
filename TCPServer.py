@@ -187,7 +187,7 @@ def main():
 				dealerCards.append(dealersDeck.pop())
 				playerCards.append(dealersDeck.pop())
 				dealerCards.append(dealersDeck.pop())
-				if 'Ace' in playerCards:
+				if 'Ace' in playerCards[0]:
 					ace_mssg = [
 						"You drew an Ace. Select its value (1 or 11): \n"
 						"Player shows: ", str(playerCards), "\n"
@@ -229,7 +229,8 @@ def main():
 						"----------------------------", "\n",
 						"Blackjack! Player wins.\n"
 					]
-					connectionSocket.send(youLose.encode())
+					message = " ".join(map(str, youLose)) 
+					connectionSocket.send(message.encode())
 					continue
 				else:
 					youLose = "I didn't win right way its go time.\n"
