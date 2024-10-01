@@ -116,7 +116,7 @@ def playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
 				reply_mssg = " ".join(map(str, reply))
 				connectionSocket.send(reply_mssg.encode())
 				gameGoesOn = False
-
+				break
 
 				
 
@@ -188,9 +188,12 @@ def main():
 				playerCards.append(dealersDeck.pop())
 				dealerCards.append(dealersDeck.pop())
 				if 'Ace' in playerCards[0]:
-					ace_mssg = [
-						"You drew an Ace. Select its value (1 or 11): \n"
+					playerSum = addCards(playerCards)
+					if playerSum > 21:
+						playerSum -= 10
+					'''ace_mssg = [
 						"Player shows: ", str(playerCards), "\n"
+						"You drew an Ace. Select its value (1 or 11): \n"
 					]
 					ace_choice = " ".join(map(str, ace_mssg))
 					connectionSocket.send(ace_choice.encode())
@@ -202,8 +205,9 @@ def main():
 					elif '1' in ace_reply and 'Ace' in playerCards[1]:
 						playerCards[1] = 1
 					elif '11' in ace_reply and 'Ace' in playerCards[1]:
-						playerCards[1] = 11
-				playerSum = addCards(playerCards)
+						playerCards[1] = 11'''
+				else:
+					playerSum = addCards(playerCards)
 				dealerSum = addCards(dealerCards)
 				dealer_score = values(dealerCards[0])
 				if dealerSum == 21:
@@ -218,7 +222,7 @@ def main():
 					]
 					lost_mssg = " ".join(map(str, youLose))
 					connectionSocket.send(lost_mssg.encode())  # sends confirmation 
-					continue
+					break
 				elif playerSum == 21:
 					youLose = [
 						"----------------------------", "\n",
@@ -231,7 +235,7 @@ def main():
 					]
 					message = " ".join(map(str, youLose)) 
 					connectionSocket.send(message.encode())
-					continue
+					break
 				else:
 					youLose = "I didn't win right way its go time.\n"
 					connectionSocket.send(youLose.encode())  # sends confirmation 

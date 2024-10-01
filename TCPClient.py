@@ -26,12 +26,13 @@ def main():
 
 		while iWannaPlay:
 			deal_message = clientSocket.recv(1024).decode()  # receives the card draw message from server
-			if 'You drew an Ace.' in deal_message:
+			'''if 'You drew an Ace.' in deal_message:
 				ace_val = input(deal_message)
-				clientSocket.send(ace_val.encode())
+				clientSocket.send(ace_val.encode())'''
+		
 			hitOrStay = input(deal_message)  # asks user to hit or stay
 			clientSocket.send(hitOrStay.encode())  # sends user's answer to the server
-			
+		
 			if hitOrStay.lower() == "stay":
 				print (clientSocket.recv(1024).decode())
 				iWannaPlay = False  # breaks the loop if the user chooses to stay
