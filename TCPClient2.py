@@ -23,7 +23,7 @@ def main():
     serverName = '127.0.0.1'
     serverPort = 16666
     clientSocket = socket(AF_INET, SOCK_STREAM)
-    clientSocket.connect((serverName, serverPort))
+    clientSocket.connect((serverName, serverPort))  # Connects via socket
     print('\n Connect to:', '127.0.0.1, 16666')
 
     while True:
@@ -40,39 +40,39 @@ def main():
         start_reply = clientSocket.recv(1024).decode()  # receives confirmation of game
         print(start_reply)
         heWon = clientSocket.recv(1024).decode()
-        if "I won with" in heWon:
+        if "I won with" in heWon: # Dealer wins with Blackjack
             print(heWon)
             break
-        elif "We both got 21" in heWon:  # Fixing the indentation here
+        elif "We both got 21" in heWon:  # Game results in tie
             print(heWon)
             break
-        elif "You win with Blackjack" in heWon:  # Fixing the indentation here
+        elif "You win with Blackjack" in heWon:  # Player wins with Blackjack
             print(heWon)
             break
         else:
             print(heWon)
         deal_message = clientSocket.recv(1024).decode()# receives the card draw message from server
         print(deal_message)
-        iWannaPlay = True
+        iWannaPlay = True   # Boolean to start the loop into the game
 
         while iWannaPlay:
             
             hitOrStay = input("Would you like to hit or stay: ").lower()  # asks user to hit or stay
-            if hitOrStay != "hit" and hitOrStay != "stay":
+            if hitOrStay != "hit" and hitOrStay != "stay":  # Checks for valid input
                 print("Either hit or stay can't be anything else")
                 continue
             clientSocket.send(hitOrStay.encode())  # sends user's answer to the server
             
-            if hitOrStay.lower() == "stay":
+            if hitOrStay.lower() == "stay": # Player chooses to stay
                 print(clientSocket.recv(1024).decode())
                 iWannaPlay = False  # breaks the loop if the user chooses to stay
-            elif hitOrStay.lower() == "hit":
+            elif hitOrStay.lower() == "hit":    # Player chooses to hit
                 statusAfterHit = clientSocket.recv(1024).decode()
-                print(statusAfterHit)
-                if "win" in statusAfterHit or "tie" in statusAfterHit:
+                print(statusAfterHit)   # Print updated game status after hitting
+                if "win" in statusAfterHit or "tie" in statusAfterHit:  
                     break
         break
-    clientSocket.close()
+    clientSocket.close()    # Close the socket
 
 if __name__ == '__main__':
     main()
