@@ -1,10 +1,31 @@
+##########Documentation Block ##################################
+# Authors: Dustin Kramer, Jesse Quier                                       						
+# Major: Computer Science                                       
+# Creation Date: September 16, 2024                                
+# Due Date: October 4, 2024                                   
+# Course: CSC311 Section 010                                    
+# Professor Name: Professor Jici Huang                       
+# Assignment: Computer Networks                                        
+# Filename: TCPServer.py                                    
+# Purpose: Looks for a client to play a game of Blackjack with and acts as the dealer
+#          for the client.           
+################################################################
+
 from socket import *
 import random
 
+################################Documentation Block#####################################
+# Function name: makeDeck							  	  
+# Description: creates a tuple of a deck of cards that contains sets of card values and
+#              card suites.
+# Parameters: None
+# Return Value: returns the list of tuples containing all the cards and numbers for
+#               the cards.			  														  
+########################################################################################
 def makeDeck():
-    card_suits = ["Hearts", 'Diamonds', 'Spades', 'Clubs']
-    card_values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
-    deck = [(val, suit) for val in card_values for suit in card_suits]   
+    cardSuits = ["Hearts", 'Diamonds', 'Spades', 'Clubs']
+    cardValues = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
+    deck = [(val, suit) for val in cardValues for suit in cardSuits]   
     return deck
 
 def addCards(cards):
@@ -19,11 +40,10 @@ def addCards(cards):
             ace_count += 1
         else:
             cardsTotal += int(card[0])  # Convert card value to int
-
     # Adjust for Aces if total exceeds 21
     while cardsTotal > 21 and ace_count:
         cardsTotal -= 10  # Count one Ace as 1 instead of 11
-        aces_count -= 1
+        ace_count -= 1
 
     return cardsTotal
 
@@ -89,6 +109,7 @@ def dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
             dealerSum = addCards(dealerCards)
         else :#dealerSum >= 17 or dealerSum < playerSum:
             dealersTurn = False
+    print("Its the dealers turn now")
     print("----------------------------")
     print("Player shows: ", playerCards)
     print("Player score: ", playerSum)
@@ -98,6 +119,7 @@ def dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
 
     # Prepare the message to send to the client
     message = [
+        "It's the dealers turn now \n"
         "----------------------------", "\n",
         "Player shows: ", str(playerCards), "\n",
         "Player score: ", playerSum, "\n",
@@ -133,7 +155,7 @@ def main():
               # yes or no
             sentence = connectionSocket.recv(1024).decode()
             if 'yes' == sentence:
-                reply = "Okay, let's play a game.\n"
+                reply = "Okay, let's play a game."
                 connectionSocket.send(reply.encode())  # sends confirmation 
                 dealersDeck = makeDeck()
                 random.shuffle(dealersDeck)
@@ -150,6 +172,7 @@ def main():
                 playerSum = addCards(playerCards)
                 dealerSum = addCards(dealerCards)
                 dealer_score = values(dealerCards[0])
+
                 gameStatusPrint(playerCards, playerSum, dealerCards, dealerSum)
                 naWinMes = [
                     "----------------------------", "\n",
@@ -160,24 +183,24 @@ def main():
                     "----------------------------", "\n",
                 ]
 
-                if dealerSum == 21:
-                    naWinMes.append( "21 I won before the game even started, too bad so sad.\n")
+                if dealerSum == 21 and playerSum == 21:
+                    naWinMes.append("We both got 21 on the draw, what are the odds it's a tie.\n")
+                    naturalWinsMessage = " ".join(map(str, naWinMes))
+                    connectionSocket.send(naturalWinsMessage.encode())
+                    break                
+                elif dealerSum == 21:
+                    naWinMes.append( "I won with BlackJack before the game even started, too bad so sad.\n")
                     naturalWinsMessage = " ".join(map(str, naWinMes))
                     connectionSocket.send(naturalWinsMessage.encode())
                     connectionSocket.close()
                     break
-                elif dealerSum == 21 and playerSum == 21:
-                    naturalWinsMessage.append("We both got 21 on the draw, what are the odds it's a tie.\n")
-                    naturalWinsMessage = " ".join(map(str, naWinMes))
-                    connectionSocket.send(naturalWinsMessage.encode())
-                    break
                 elif playerSum == 21:
-                    naWinMes.append("21 You win with Blackjack \n")
+                    naWinMes.append("You win with Blackjack \n")
                     naturalWinsMessage = " ".join(map(str, naWinMes))
                     connectionSocket.send(naturalWinsMessage.encode())
                     break
                 else:
-                    youLose = "I didn't win right away, it's go time.\n"
+                    youLose = "I didn't win right away, it's go time."
                     connectionSocket.send(youLose.encode())  # sends confirmation 
                 
                 
