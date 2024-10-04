@@ -177,14 +177,19 @@ def dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, connectionSo
     ]
     # Determine the winner
     if playerSum > 21:                              #   PLayer busts
+        print("Player busted dealer wins\n")
         message.append("Player busted dealer wins\n")
     elif dealerSum > 21:                            #   Dealer busts
+        print("Dealer busted you win\n")
         message.append("Dealer busted you win\n")
     elif playerSum > dealerSum and playerSum <= 21: #   Player score beats dealer score
+        print("You win. You beat the dealer\n")
         message.append("You win. You beat the dealer\n")
     elif playerSum < dealerSum:                     #   Dealer score beats player score
+        print("House always wins. Dealer wins \n")
         message.append("House always wins. Dealer wins \n")
     else:
+        print("It's a tie! \n")
         message.append("It's a tie!\n")             #   Player and dealer scores tie
     # Convert the reply to a string and send it to the client
     message_str = " ".join(map(str, message))
@@ -192,11 +197,9 @@ def dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, connectionSo
 
 ################################Documentation Block#####################################
 # Function name: makeDeck							  	  
-# Description: creates a tuple of a deck of cards that contains sets of card values and
-#              card suites.
+# Description: initializes the program
 # Parameters: None
-# Return Value: returns the list of tuples containing all the cards and numbers for
-#               the cards.			  														  
+# Return Value: None			  														  
 ########################################################################################
 def main():
     print("Starting server...")
