@@ -1,5 +1,24 @@
+##########Documentation Block ##################################
+# Authors: Dustin Kramer, Jesse Quier                                       						
+# Major: Computer Science                                       
+# Creation Date: September 16, 2024                                
+# Due Date: October 4, 2024                                   
+# Course: CSC311 Section 010                                    
+# Professor Name: Professor Jici Huang                       
+# Assignment: Computer Networks                                        
+# Filename: TCPClient.py                                    
+# Purpose: 
+#           
+################################################################
 from socket import *
-
+################################Documentation Block#####################################
+# Function name: makeDeck							  	  
+# Description: creates a tuple of a deck of cards that contains sets of card values and
+#              card suites.
+# Parameters: None
+# Return Value: returns the list of tuples containing all the cards and numbers for
+#               the cards.			  														  
+########################################################################################
 def main():
     serverName = '127.0.0.1'
     serverPort = 16666

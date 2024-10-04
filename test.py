@@ -23,11 +23,18 @@ import random
 #               the cards.			  														  
 ########################################################################################
 def makeDeck():
-    cardSuits = ["Hearts", 'Diamonds', 'Spades', 'Clubs']
-    cardValues = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
-    deck = [(val, suit) for val in cardValues for suit in cardSuits]   
+    cardSuits = ["Hearts", 'Diamonds', 'Spades', 'Clubs'] # a list of all the card suits
+    cardValues = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'] # a list of all the card numbers
+    deck = [(val, suit) for val in cardValues for suit in cardSuits] # creates a list of tuples for   
     return deck
-
+################################Documentation Block#####################################
+# Function name: makeDeck							  	  
+# Description: creates a tuple of a deck of cards that contains sets of card values and
+#              card suites.
+# Parameters: None
+# Return Value: returns the list of tuples containing all the cards and numbers for
+#               the cards.			  														  
+########################################################################################
 def addCards(cards):
     cardsTotal = 0
     ace_count = 0
@@ -46,7 +53,14 @@ def addCards(cards):
         ace_count -= 1
 
     return cardsTotal
-
+################################Documentation Block#####################################
+# Function name: makeDeck							  	  
+# Description: creates a tuple of a deck of cards that contains sets of card values and
+#              card suites.
+# Parameters: None
+# Return Value: returns the list of tuples containing all the cards and numbers for
+#               the cards.			  														  
+########################################################################################
 def values(val):
     if val[0] in ['Jack', 'Queen', 'King']:
         return 10
@@ -54,7 +68,14 @@ def values(val):
         return 11
     else:
         return int(val[0]) 
-    
+################################Documentation Block#####################################
+# Function name: makeDeck							  	  
+# Description: creates a tuple of a deck of cards that contains sets of card values and
+#              card suites.
+# Parameters: None
+# Return Value: returns the list of tuples containing all the cards and numbers for
+#               the cards.			  														  
+########################################################################################    
 def gameStatusPrint(playerCards, playerSum, dealerCards, dealerSum):
     print("----------------------------")
     print("Player shows: ", playerCards)
@@ -62,7 +83,14 @@ def gameStatusPrint(playerCards, playerSum, dealerCards, dealerSum):
     print("Dealer shows: ", dealerCards)
     print("Dealer score: ", dealerSum )
     print("----------------------------")
-
+################################Documentation Block#####################################
+# Function name: makeDeck							  	  
+# Description: creates a tuple of a deck of cards that contains sets of card values and
+#              card suites.
+# Parameters: None
+# Return Value: returns the list of tuples containing all the cards and numbers for
+#               the cards.			  														  
+########################################################################################
 def gameStatusSend(playerCards, playerSum, dealerCards, dealer_score, connectionSocket):
     message = [
             "----------------------------", "\n",
@@ -75,7 +103,14 @@ def gameStatusSend(playerCards, playerSum, dealerCards, dealer_score, connection
     
     message_str = " ".join(map(str, message))
     connectionSocket.send(message_str.encode())  # sends the card draw
-
+################################Documentation Block#####################################
+# Function name: makeDeck							  	  
+# Description: creates a tuple of a deck of cards that contains sets of card values and
+#              card suites.
+# Parameters: None
+# Return Value: returns the list of tuples containing all the cards and numbers for
+#               the cards.			  														  
+########################################################################################
 def playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score, connectionSocket, dealersDeck):
     gameGoesOn = True
     while gameGoesOn:
@@ -100,7 +135,14 @@ def playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
             elif playerSum > 21:
                 dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score, connectionSocket, dealersDeck)
                 gameGoesOn = False
-        
+################################Documentation Block#####################################
+# Function name: makeDeck							  	  
+# Description: creates a tuple of a deck of cards that contains sets of card values and
+#              card suites.
+# Parameters: None
+# Return Value: returns the list of tuples containing all the cards and numbers for
+#               the cards.			  														  
+########################################################################################        
 def dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score, connectionSocket, dealersDeck):
     dealersTurn = True
     while dealersTurn:
@@ -138,7 +180,14 @@ def dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
     message_str = " ".join(map(str, message))
     connectionSocket.send(message_str.encode())
 
-
+################################Documentation Block#####################################
+# Function name: makeDeck							  	  
+# Description: creates a tuple of a deck of cards that contains sets of card values and
+#              card suites.
+# Parameters: None
+# Return Value: returns the list of tuples containing all the cards and numbers for
+#               the cards.			  														  
+########################################################################################
 def main():
     print("Starting server...")
     serverPort = 16666
