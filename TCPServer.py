@@ -133,6 +133,7 @@ def playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
             playerCards.append(dealersDeck.pop())   # Choose another card from the deck
             playerSum = addCards(playerCards)   # Add up the new card values
             if playerSum <= 21: # Print updated game status and player chooses again to hit or stay 
+                gameStatusPrint(playerCards, playerSum, dealerCards, dealerSum) # prints the changes to be seen on dealer side
                 gameStatusSend(playerCards, playerSum, dealerCards, dealer_score, connectionSocket)
             elif playerSum > 21:
                 dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, connectionSocket, dealersDeck)
@@ -155,7 +156,7 @@ def dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, connectionSo
         if dealerSum < 17 and playerSum <= 21:  # If player didn't bust and dealer score is > 17, dealer must hit
             dealerCards.append(dealersDeck.pop())   # Dealer gets new card
             dealerSum = addCards(dealerCards)   # Add dealers new cards
-        else :#dealerSum >= 17 or dealerSum < playerSum:
+        else :# doesn't hit
             dealersTurn = False
     print("Its the dealers turn now")
     print("----------------------------")
