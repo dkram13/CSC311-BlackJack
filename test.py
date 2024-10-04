@@ -58,12 +58,12 @@ def addCards(cards):
 # Return Value: 			  														  
 ########################################################################################
 def values(val):
-    if val[0] in ['Jack', 'Queen', 'King']:
+    if val[0] in ['Jack', 'Queen', 'King']: # Assign value of 10 to Jack, King, Queen
         return 10
-    elif val[0] == 'Ace':	
+    elif val[0] == 'Ace':   # Assign 11 to Ace automatically
         return 11
     else:
-        return int(val[0]) 
+        return int(val[0])  # Else return the number value of the card
 ################################Documentation Block#####################################
 # Function name: gameStatusPrint							  	  
 # Description: Prints the status of what the player and dealer currently have on dealers side
@@ -73,7 +73,7 @@ def values(val):
 #             int - dealerSum - the total score of the dealers cards added up - output
 # Return Value: None			  														  
 ########################################################################################    
-def gameStatusPrint(playerCards, playerSum, dealerCards, dealerSum):
+def gameStatusPrint(playerCards, playerSum, dealerCards, dealerSum):    # Output current game status
     print("----------------------------")
     print("Player shows: ", playerCards)
     print("Player score: ", playerSum)
@@ -91,7 +91,7 @@ def gameStatusPrint(playerCards, playerSum, dealerCards, dealerSum):
 # Return Value: returns the list of tuples containing all the cards and numbers for
 #               the cards.			  														  
 ########################################################################################
-def gameStatusSend(playerCards, playerSum, dealerCards, dealer_score, connectionSocket):
+def gameStatusSend(playerCards, playerSum, dealerCards, dealer_score, connectionSocket):    # Game status to be sent
     message = [
             "----------------------------", "\n",
             "Player shows: ", str(playerCards), "\n",
@@ -101,7 +101,7 @@ def gameStatusSend(playerCards, playerSum, dealerCards, dealer_score, connection
             "----------------------------", "\n",
         ]   
     
-    message_str = " ".join(map(str, message))
+    message_str = " ".join(map(str, message))   # Format all types to string 
     connectionSocket.send(message_str.encode())  # sends the card draw
 ################################Documentation Block#####################################
 # Function name: playerHitOrStay						  	  
@@ -117,22 +117,22 @@ def gameStatusSend(playerCards, playerSum, dealerCards, dealer_score, connection
 ########################################################################################
 def playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score, connectionSocket, dealersDeck):
     gameGoesOn = True
-    while gameGoesOn:
+    while gameGoesOn:   # While true, continue playing
         # Show current game status
         #gameStatusPrint(playerCards, playerSum, dealerCards, dealerSum)
         #gameStatusSend(playerCards, playerSum, dealerCards, dealer_score, connectionSocket)
         # Receive player's answer (hit or stay)
         answer = connectionSocket.recv(1024).decode()
 
-        if answer.lower() == "stay":
+        if answer.lower() == "stay":    # Do this if player cooses to stay
             gameGoesOn = False
             # Call dealer's action and get the result
             dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, connectionSocket, dealersDeck)
             continue
-        elif answer.lower() == "hit":
-            playerCards.append(dealersDeck.pop())
-            playerSum = addCards(playerCards)
-            if playerSum <= 21:
+        elif answer.lower() == "hit":   # Do this if player chooses to hit
+            playerCards.append(dealersDeck.pop())   # Choose another card from the deck
+            playerSum = addCards(playerCards)   # Add up the new card values
+            if playerSum <= 21: # Print updated game status and player chooses again to hit or stay 
                 gameStatusSend(playerCards, playerSum, dealerCards, dealer_score, connectionSocket)
             elif playerSum > 21:
                 dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, connectionSocket, dealersDeck)
@@ -152,9 +152,9 @@ def playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
 def dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, connectionSocket, dealersDeck):
     dealersTurn = True
     while dealersTurn:
-        if dealerSum < 17 and playerSum <= 21:#and dealerSum < playerSum and playerSum > 21:
-            dealerCards.append(dealersDeck.pop())
-            dealerSum = addCards(dealerCards)
+        if dealerSum < 17 and playerSum <= 21:  # If player didn't bust and dealer score is > 17, dealer must hit
+            dealerCards.append(dealersDeck.pop())   # Dealer gets new card
+            dealerSum = addCards(dealerCards)   # Add dealers new cards
         else :#dealerSum >= 17 or dealerSum < playerSum:
             dealersTurn = False
     print("Its the dealers turn now")
@@ -176,16 +176,16 @@ def dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, connectionSo
         "----------------------------", "\n",
     ]
     # Determine the winner
-    if playerSum > 21:
+    if playerSum > 21:                              #   PLayer busts
         message.append("Player busted dealer wins\n")
-    elif dealerSum > 21:
+    elif dealerSum > 21:                            #   Dealer busts
         message.append("Dealer busted you win\n")
-    elif playerSum > dealerSum and playerSum <= 21:
+    elif playerSum > dealerSum and playerSum <= 21: #   Player score beats dealer score
         message.append("You win. You beat the dealer\n")
-    elif playerSum < dealerSum:
+    elif playerSum < dealerSum:                     #   Dealer score beats player score
         message.append("House always wins. Dealer wins \n")
     else:
-        message.append("It's a tie!\n")
+        message.append("It's a tie!\n")             #   Player and dealer scores tie
     # Convert the reply to a string and send it to the client
     message_str = " ".join(map(str, message))
     connectionSocket.send(message_str.encode())
@@ -201,36 +201,36 @@ def dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, connectionSo
 def main():
     print("Starting server...")
     serverPort = 16666
-    serverSocket = socket(AF_INET, SOCK_STREAM)
-    serverSocket.bind(('', serverPort))
+    serverSocket = socket(AF_INET, SOCK_STREAM) # Setup socket
+    serverSocket.bind(('', serverPort))    
     #serverSocket.listen(5)
     print('The server is ready to receive')
     serverSocket.listen(5)
     while True:
         
-        connectionSocket, addr = serverSocket.accept()
+        connectionSocket, addr = serverSocket.accept()  # Variable for socket connection
         
         while True:
               # yes or no
-            sentence = connectionSocket.recv(1024).decode()
-            if 'yes' == sentence:
+            sentence = connectionSocket.recv(1024).decode() # Receive player input to start game
+            if 'yes' == sentence:   
                 reply = "Okay, let's play a game."
                 connectionSocket.send(reply.encode())  # sends confirmation 
-                dealersDeck = makeDeck()
-                random.shuffle(dealersDeck)
+                dealersDeck = makeDeck()    # Make the deck of cards
+                random.shuffle(dealersDeck) # Shuffle the deck 
 
-                playerCards = []
-                dealerCards = []
+                playerCards = []    # List to hold player's cards
+                dealerCards = []    # List to hold dealer's cards
 
                 # Deal initial cards
-                playerCards.append(dealersDeck.pop())
-                dealerCards.append(dealersDeck.pop())
-                playerCards.append(dealersDeck.pop())
-                dealerCards.append(dealersDeck.pop())
+                playerCards.append(dealersDeck.pop())   # Draw player's 1st card 
+                dealerCards.append(dealersDeck.pop())   # Draw dealer's 1st card
+                playerCards.append(dealersDeck.pop())   # Draw player's 2nd card 
+                dealerCards.append(dealersDeck.pop())   # Draw dealer's 2nd card
 
-                playerSum = addCards(playerCards)
-                dealerSum = addCards(dealerCards)
-                dealer_score = values(dealerCards[0])
+                playerSum = addCards(playerCards)   # Add player card values
+                dealerSum = addCards(dealerCards)   # Add dealer card values
+                dealer_score = values(dealerCards[0])   # Dealer score hiding 2nd card
 
                 gameStatusPrint(playerCards, playerSum, dealerCards, dealerSum)
                 naWinMes = [
@@ -242,18 +242,18 @@ def main():
                     "----------------------------", "\n",
                 ]
 
-                if dealerSum == 21 and playerSum == 21:
+                if dealerSum == 21 and playerSum == 21:     # If both player and dealer draw Blackjack on start
                     naWinMes.append("We both got 21 on the draw, what are the odds it's a tie.\n")
                     naturalWinsMessage = " ".join(map(str, naWinMes))
                     connectionSocket.send(naturalWinsMessage.encode())
                     break                
-                elif dealerSum == 21:
+                elif dealerSum == 21:   # Dealer draws Blackjack on start
                     naWinMes.append( "I won with BlackJack before the game even started, too bad so sad.\n")
                     naturalWinsMessage = " ".join(map(str, naWinMes))
                     connectionSocket.send(naturalWinsMessage.encode())
                     connectionSocket.close()
                     break
-                elif playerSum == 21:
+                elif playerSum == 21:   # Player draws Blackjack on start
                     naWinMes.append("You win with Blackjack \n")
                     naturalWinsMessage = " ".join(map(str, naWinMes))
                     connectionSocket.send(naturalWinsMessage.encode())
@@ -263,21 +263,21 @@ def main():
                     connectionSocket.send(youLose.encode())  # sends confirmation 
                 
                 
-                gameStatusSend(playerCards, playerSum, dealerCards, dealer_score, connectionSocket)
+                gameStatusSend(playerCards, playerSum, dealerCards, dealer_score, connectionSocket) # Send game status after draw
                 
-                playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score, connectionSocket, dealersDeck)
+                playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score, connectionSocket, dealersDeck)    
                 break
-            elif 'no' == sentence:
+            elif 'no' == sentence:  # Player chooses not to play
                 message = 'Too bad, I would have won.'
                 connectionSocket.send(message.encode())
                 break
             else:
-                message = 'Invalid input.'
+                message = 'Invalid input.'  # Check for valid input at start
                 connectionSocket.send(message.encode())
         
         connectionSocket.close()  # Close the connection after the game            
         break
-    serverSocket.close
+    serverSocket.close  # Close server side socket connection
 
 if __name__ == '__main__':
     main()
