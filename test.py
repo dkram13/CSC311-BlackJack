@@ -170,10 +170,14 @@ def dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
         "----------------------------", "\n",
     ]
     # Determine the winner
-    if playerSum > dealerSum and playerSum < 22 or dealerSum > 21:
-        message.append("You win\n")
-    elif playerSum < dealerSum or playerSum > 21:
-        message.append("Dealers win\n")
+    if playerSum > 21:
+        message.append("Player busted dealer wins\n")
+    elif dealerSum > 21:
+        message.append("Dealer busted you win\n")
+    elif playerSum > dealerSum and playerSum <= 21:
+        message.append("You win. You beat the dealer\n")
+    elif playerSum < dealerSum:
+        message.append("House always wins. Dealer wins \n")
     else:
         message.append("It's a tie!\n")
     # Convert the reply to a string and send it to the client
