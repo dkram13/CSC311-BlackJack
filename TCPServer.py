@@ -54,8 +54,8 @@ def addCards(cards):
 ################################Documentation Block#####################################
 # Function name: values						  	  
 # Description: adds a value to cards with a non-standard value
-# Parameters: None
-# Return Value: 			  														  
+# Parameters: string - val - The cards value - output  
+# Return Value: returns the number associated with a card 			  														  
 ########################################################################################
 def values(val):
     if val[0] in ['Jack', 'Queen', 'King']: # Assign value of 10 to Jack, King, Queen
