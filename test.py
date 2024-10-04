@@ -28,12 +28,10 @@ def makeDeck():
     deck = [(val, suit) for val in cardValues for suit in cardSuits] # creates a list of tuples for   
     return deck
 ################################Documentation Block#####################################
-# Function name: makeDeck							  	  
-# Description: creates a tuple of a deck of cards that contains sets of card values and
-#              card suites.
-# Parameters: None
-# Return Value: returns the list of tuples containing all the cards and numbers for
-#               the cards.			  														  
+# Function name: addCards							  	  
+# Description: adds the cards in the hand of a player/dealer
+# Parameters: list - cards - a list of tuples holding the cards in player/dealer hand - input 
+# Return Value: returns the total value of the cards in hand of player/dealers			  														  
 ########################################################################################
 def addCards(cards):
     cardsTotal = 0
@@ -54,12 +52,10 @@ def addCards(cards):
 
     return cardsTotal
 ################################Documentation Block#####################################
-# Function name: makeDeck							  	  
-# Description: creates a tuple of a deck of cards that contains sets of card values and
-#              card suites.
+# Function name: values						  	  
+# Description: adds a value to cards with a non-standard value
 # Parameters: None
-# Return Value: returns the list of tuples containing all the cards and numbers for
-#               the cards.			  														  
+# Return Value: 			  														  
 ########################################################################################
 def values(val):
     if val[0] in ['Jack', 'Queen', 'King']:
@@ -69,12 +65,13 @@ def values(val):
     else:
         return int(val[0]) 
 ################################Documentation Block#####################################
-# Function name: makeDeck							  	  
-# Description: creates a tuple of a deck of cards that contains sets of card values and
-#              card suites.
-# Parameters: None
-# Return Value: returns the list of tuples containing all the cards and numbers for
-#               the cards.			  														  
+# Function name: gameStatusPrint							  	  
+# Description: Prints the status of what the player and dealer currently have on dealers side
+# Parameters: list - playerCards - A list of tuples of the players cards - output
+#             int - playerSum - the total score of the players cards added up - output
+#             list - dealerCards - A list of tuples of the dealers cards - output
+#             int - dealerSum - the total score of the dealers cards added up - output
+# Return Value: None			  														  
 ########################################################################################    
 def gameStatusPrint(playerCards, playerSum, dealerCards, dealerSum):
     print("----------------------------")
@@ -84,10 +81,13 @@ def gameStatusPrint(playerCards, playerSum, dealerCards, dealerSum):
     print("Dealer score: ", dealerSum )
     print("----------------------------")
 ################################Documentation Block#####################################
-# Function name: makeDeck							  	  
-# Description: creates a tuple of a deck of cards that contains sets of card values and
-#              card suites.
-# Parameters: None
+# Function name: gameStatusSend 							  	  
+# Description: sends the game status to the client
+# Parameters: list - playerCards - A list of tuples of the players cards - output
+#             int - playerSum - the total score of the players cards added up - output
+#             list - dealerCards - A list of tuples of the dealers cards - output
+#             int - dealer_score - the card number for the first card in the dealers hand - output
+#             connectionSocket - socket connection to the client - input/output
 # Return Value: returns the list of tuples containing all the cards and numbers for
 #               the cards.			  														  
 ########################################################################################
@@ -104,12 +104,16 @@ def gameStatusSend(playerCards, playerSum, dealerCards, dealer_score, connection
     message_str = " ".join(map(str, message))
     connectionSocket.send(message_str.encode())  # sends the card draw
 ################################Documentation Block#####################################
-# Function name: makeDeck							  	  
-# Description: creates a tuple of a deck of cards that contains sets of card values and
-#              card suites.
-# Parameters: None
-# Return Value: returns the list of tuples containing all the cards and numbers for
-#               the cards.			  														  
+# Function name: playerHitOrStay						  	  
+# Description: A loop that gives the player the option of either hit or stay
+# Parameters: list - playerCards - A list of tuples of the players cards - output
+#             int - playerSum - the total score of the players cards added up - output
+#             list - dealerCards - A list of tuples of the dealers cards - output
+#             int - dealerSum - the total score of the dealers cards added up - output
+#             int - dealer_score - the card number for the first card in the dealers hand - output
+#             connectionSocket - socket connection to the client - input/output
+#             dealersDeck - A list of tuples that simulates a deck of cards  - input/output
+# Return Value: None		  														  
 ########################################################################################
 def playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score, connectionSocket, dealersDeck):
     gameGoesOn = True
@@ -123,27 +127,29 @@ def playerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score
         if answer.lower() == "stay":
             gameGoesOn = False
             # Call dealer's action and get the result
-            dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score, connectionSocket, dealersDeck)
+            dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, connectionSocket, dealersDeck)
             continue
         elif answer.lower() == "hit":
             playerCards.append(dealersDeck.pop())
             playerSum = addCards(playerCards)
             if playerSum <= 21:
                 gameStatusSend(playerCards, playerSum, dealerCards, dealer_score, connectionSocket)
-            #elif playerSum == 21:
-
             elif playerSum > 21:
-                dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score, connectionSocket, dealersDeck)
+                dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, connectionSocket, dealersDeck)
                 gameGoesOn = False
 ################################Documentation Block#####################################
-# Function name: makeDeck							  	  
-# Description: creates a tuple of a deck of cards that contains sets of card values and
-#              card suites.
-# Parameters: None
-# Return Value: returns the list of tuples containing all the cards and numbers for
-#               the cards.			  														  
+# Function name: dealerHitOrStay							  	  
+# Description: A loop that makes the dealer hit if below 17 and less than the player as well
+#             sending game results to the player on who won.
+# Parameters: list - playerCards - A list of tuples of the players cards - output
+#             int - playerSum - the total score of the players cards added up - output
+#             list - dealerCards - A list of tuples of the dealers cards - output
+#             int - dealerSum - the total score of the dealers cards added up - output
+#             connectionSocket - socket connection to the client - input/output
+#             dealersDeck - A list of tuples that simulates a deck of cards  - input/output
+# Return Value: None			  														  
 ########################################################################################        
-def dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, dealer_score, connectionSocket, dealersDeck):
+def dealerHitOrStay(playerCards, playerSum, dealerCards, dealerSum, connectionSocket, dealersDeck):
     dealersTurn = True
     while dealersTurn:
         if dealerSum < 17 and playerSum <= 21:#and dealerSum < playerSum and playerSum > 21:
